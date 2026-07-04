@@ -1,4 +1,4 @@
-const productsStorageKey = "mumma-lookbook-products-v2";
+const productsStorageKey = "mumma-lookbook-products-v3";
 const productsDbName = "mumma-lookbook";
 const productsDbVersion = 3;
 const productsMediaStore = "product-media";
@@ -9,57 +9,57 @@ const productVideoExtensions = ["mp4", "webm", "mov"];
 const defaultProductSeeds = [
   {
     title: "DRESS",
-    note: "Printed everyday silhouettes with export-ready finishing.",
+    note: "Printed everyday silhouette.",
     mediaBase: "product-01",
   },
   {
     title: "SHORT DRESS",
-    note: "Soft daywear shapes designed for easy buyer review.",
+    note: "Soft daywear shape.",
     mediaBase: "product-02",
   },
   {
     title: "TOP",
-    note: "Lightweight tops with clean trims and commercial styling.",
+    note: "Lightweight separate.",
     mediaBase: "product-03",
   },
   {
     title: "CO-ORD SET",
-    note: "Matched separates for relaxed resort and retail programs.",
+    note: "Matched relaxed separates.",
     mediaBase: "product-04",
   },
   {
     title: "DRESS",
-    note: "Fresh floral dresses with balanced proportion and movement.",
+    note: "Fresh floral silhouette.",
     mediaBase: "product-05",
   },
   {
     title: "SHORT DRESS",
-    note: "Compact silhouettes with soft volume and precise finishing.",
+    note: "Compact soft-volume dress.",
     mediaBase: "product-06",
   },
   {
     title: "DRESS",
-    note: "Neutral embroidered dresses with a calm black-and-ivory language.",
+    note: "Neutral embroidered styling.",
     mediaBase: "product-07",
   },
   {
-    title: "TOP / PALAZZO",
-    note: "Separates for modular merchandising across seasonal ranges.",
+    title: "PALAZZO",
+    note: "Soft-volume bottom.",
     mediaBase: "product-08",
   },
   {
     title: "CO-ORD SET",
-    note: "Summer-ready cotton sets with light embroidery and comfort fit.",
+    note: "Light embroidered set.",
     mediaBase: "product-09",
   },
   {
-    title: "KURTA",
-    note: "Printed longline styles for contemporary ethnic export programs.",
+    title: "DRESS",
+    note: "Printed longline dress.",
     mediaBase: "product-10",
   },
   {
-    title: "BOTTOMS",
-    note: "Clean bottoms and shorts styled for coordinated assortment planning.",
+    title: "PANTS",
+    note: "Clean coordinated bottom.",
     mediaBase: "product-11",
   },
 ];
