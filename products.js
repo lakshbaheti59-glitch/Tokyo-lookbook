@@ -4,6 +4,13 @@ const productsDbVersion = 3;
 const productsMediaStore = "product-media";
 const productMediaSlots = ["front", "back"];
 const productTemplateNumber = 1;
+const productImageExtensions = ["jpeg", "jpg", "png", "webp", "avif", "svg"];
+const productVideoExtensions = ["mp4", "webm", "mov"];
+const defaultProductSeeds = [
+  { title: "DRESS", note: "" },
+  { title: "SHORT DRESS", note: "" },
+  { title: "TOP", note: "" },
+];
 
 const productsList = document.querySelector("#productsList");
 const addProductButton = document.querySelector("#addProductButton");
@@ -33,6 +40,8 @@ const templateNumberForIndex = () => productTemplateNumber;
 
 const normalizeTemplateNumber = () => productTemplateNumber;
 
+const productFallbackName = (index, slotName) => `product-${padNumber(index + 1)}-${slotName}`;
+
 const escapeHtml = (value = "") =>
   value
     .replaceAll("&", "&amp;")
@@ -55,17 +64,20 @@ const normalizeProduct = (seed = {}, index = 0) => ({
   template: normalizeTemplateNumber(seed.template) || templateNumberForIndex(index),
 });
 
+const createDefaultProducts = () =>
+  defaultProductSeeds.map((seed, index) => createProduct(seed, templateNumberForIndex(index)));
+
 const loadProducts = () => {
   try {
     const stored = JSON.parse(window.localStorage.getItem(productsStorageKey) || "[]");
 
     if (!Array.isArray(stored) || stored.length === 0) {
-      return [createProduct()];
+      return createDefaultProducts();
     }
 
     return stored.map((item, index) => normalizeProduct(item, index));
   } catch {
-    return [createProduct()];
+    return createDefaultProducts();
   }
 };
 
@@ -202,6 +214,78 @@ const revokeAllObjectUrls = () => {
   objectUrls.clear();
 };
 
+const mediaCandidates = (baseName, preferredType = "image") => {
+  const primary = preferredType === "video" ? productVideoExtensions : productImageExtensions;
+  const secondary = preferredType === "video" ? productImageExtensions : productVideoExtensions;
+  const primaryType = preferredType === "video" ? "video" : "image";
+  const secondaryType = preferredType === "video" ? "image" : "video";
+
+  return [
+    ...primary.map((extension) => ({
+      src: `media/${baseName}.${extension}`,
+      type: primaryType,
+    })),
+    ...secondary.map((extension) => ({
+      src: `media/${baseName}.${extension}`,
+      type: secondaryType,
+    })),
+  ];
+};
+
+const tryLoadImage = (src) =>
+  new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(src);
+    img.onerror = () => resolve(null);
+    img.src = src;
+  });
+
+const tryLoadVideo = (src) =>
+  new Promise((resolve) => {
+    const video = document.createElement("video");
+    video.preload = "metadata";
+
+    const cleanup = () => {
+      video.removeAttribute("src");
+      video.load();
+    };
+
+    video.onloadeddata = () => {
+      cleanup();
+      resolve(src);
+    };
+
+    video.onerror = () => {
+      cleanup();
+      resolve(null);
+    };
+
+    video.src = src;
+  });
+
+const resolveFallbackMedia = async (slot) => {
+  const fallbackName = slot.dataset.fallbackName;
+
+  if (!fallbackName) {
+    return null;
+  }
+
+  const sources = mediaCandidates(fallbackName, slot.dataset.preferredType || "image");
+
+  for (const candidate of sources) {
+    const src =
+      candidate.type === "video"
+        ? await tryLoadVideo(candidate.src)
+        : await tryLoadImage(candidate.src);
+
+    if (src) {
+      return { src, type: candidate.type };
+    }
+  }
+
+  return null;
+};
+
 const controlsMarkup = (hasMedia) => `
   <div class="slot-controls">
     <button type="button" class="slot-button" data-slot-action="upload">
@@ -267,11 +351,13 @@ const waitForVideoElement = (video) =>
     video.addEventListener("error", () => resolve(), { once: true });
   });
 
-const productSlotMarkup = ({ productId, slotName, label, note }) => `
+const productSlotMarkup = ({ productId, slotName, label, note, fallbackName }) => `
   <div
     class="product-upload-slot figure-slot is-empty"
     data-media-key="${slotKey(productId, slotName)}"
     data-slot-name="${slotName}"
+    data-fallback-name="${escapeHtml(fallbackName)}"
+    data-preferred-type="image"
     data-label="${escapeHtml(label)}"
     data-note="${escapeHtml(note)}"
     data-accept="image/*,video/*"
@@ -316,6 +402,7 @@ const productMarkup = (product, index) => {
             slotName: "front",
             label: "Primary product image",
             note: "Use a clean cutout, full product photo, or garment detail.",
+            fallbackName: productFallbackName(index, "front"),
           })}
         </div>
       </div>
@@ -352,6 +439,7 @@ const productMarkup = (product, index) => {
             slotName: "back",
             label: "Secondary product image",
             note: "Use an alternate angle, styling shot, or construction detail.",
+            fallbackName: productFallbackName(index, "back"),
           })}
         </div>
       </div>
@@ -430,6 +518,20 @@ const renderSlot = async (slot) => {
     return;
   }
 
+  const fallback = await resolveFallbackMedia(slot);
+
+  if (fallback) {
+    renderMedia(slot, fallback);
+
+    if (fallback.type === "video") {
+      await waitForVideoElement(slot.querySelector("video"));
+      return;
+    }
+
+    await waitForImageElement(slot.querySelector("img"));
+    return;
+  }
+
   renderPlaceholder(slot);
 };
 
@@ -465,6 +567,14 @@ const openPicker = (slot) => {
 
 const clearSlot = async (slot) => {
   await removeMedia(slot.dataset.mediaKey);
+
+  const fallback = await resolveFallbackMedia(slot);
+
+  if (fallback) {
+    renderMedia(slot, fallback);
+    return;
+  }
+
   renderPlaceholder(slot);
 };
 

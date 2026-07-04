@@ -10,7 +10,7 @@ A self-contained editorial lookbook for a garment export presentation aimed at b
 - `script.js` powers the animations, direct uploads, drag-and-drop, and optional saved media.
 - `products.css` styles the dedicated product boards.
 - `products.js` handles adding unlimited products, product details, and media for each one.
-- `media/` is optional if you want fixed files loaded by name.
+- `media/` contains the GitHub-visible photos and videos loaded by the lookbook.
 
 ## Fastest Way To Add Media
 
@@ -20,6 +20,8 @@ A self-contained editorial lookbook for a garment export presentation aimed at b
 
 Your selected files are stored in the browser for this lookbook, so the layout stays usable without renaming files.
 
+For GitHub sharing, also place the final media files in `media/` using the fixed names below. Browser uploads are convenient while editing, but committed files in `media/` are what other people can see online.
+
 ## Products Page
 
 Open `products.html` for a separate editorial product catalog page.
@@ -28,6 +30,7 @@ Open `products.html` for a separate editorial product catalog page.
 - Each sheet has two large product media frames for garment images, videos, alternate angles, or detail shots.
 - Product name and details can be filled directly on each board.
 - `Duplicate`, `Move`, and `Remove` controls are built in.
+- Product boards also load GitHub-visible files named `product-01-front`, `product-01-back`, `product-02-front`, and so on.
 
 ## Optional Fixed File Loading
 
@@ -41,14 +44,23 @@ Images can be `jpg`, `jpeg`, `png`, `webp`, `avif`, or `svg`.
 - `collection-01`
 - `collection-02`
 - `collection-03`
-- `collection-04`
 - `factory-floor`
 - `factory-craft`
+- `contact-qr`
 - `closing-hero`
 
 Videos can be `mp4`, `webm`, or `mov`.
 
 - `factory-film`
+
+Product boards use the same image and video extensions. Keep the number in the filename matched to the board order:
+
+- `product-01-front`
+- `product-01-back`
+- `product-02-front`
+- `product-02-back`
+- `product-03-front`
+- `product-03-back`
 
 Examples:
 
@@ -56,6 +68,7 @@ Examples:
 - `media/collection-02.webp`
 - `media/factory-film.mp4`
 - `media/factory-process-flow.png`
+- `media/product-01-front.jpeg`
 
 ## Optional Local Browser View
 

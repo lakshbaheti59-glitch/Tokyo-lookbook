@@ -1,4 +1,4 @@
-const imageExtensions = ["jpg", "jpeg", "png", "webp", "avif", "svg"];
+const imageExtensions = ["jpeg", "jpg", "png", "webp", "avif", "svg"];
 const videoExtensions = ["mp4", "webm", "mov"];
 const dbName = "mumma-lookbook";
 const dbVersion = 3;
