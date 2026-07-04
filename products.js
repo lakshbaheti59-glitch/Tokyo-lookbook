@@ -1,4 +1,4 @@
-const productsStorageKey = "mumma-lookbook-products-v3";
+const productsStorageKey = "mumma-lookbook-products-v4";
 const productsDbName = "mumma-lookbook";
 const productsDbVersion = 3;
 const productsMediaStore = "product-media";
@@ -10,57 +10,67 @@ const defaultProductSeeds = [
   {
     title: "DRESS",
     note: "Printed everyday silhouette.",
-    mediaBase: "product-01",
+    media: { front: "cover-hero", back: "collection-01" },
   },
   {
     title: "SHORT DRESS",
     note: "Soft daywear shape.",
-    mediaBase: "product-02",
+    media: { front: "collection-02", back: "collection-03" },
   },
   {
     title: "TOP",
     note: "Lightweight separate.",
-    mediaBase: "product-03",
+    media: { front: "product-01-front", back: "product-01-back" },
   },
   {
     title: "CO-ORD SET",
     note: "Matched relaxed separates.",
-    mediaBase: "product-04",
+    media: { front: "product-02-front", back: "product-02-back" },
   },
   {
     title: "DRESS",
     note: "Fresh floral silhouette.",
-    mediaBase: "product-05",
+    media: { front: "product-03-front", back: "product-03-back" },
   },
   {
     title: "SHORT DRESS",
     note: "Compact soft-volume dress.",
-    mediaBase: "product-06",
+    media: { front: "product-04-front", back: "product-04-back" },
   },
   {
     title: "DRESS",
     note: "Neutral embroidered styling.",
-    mediaBase: "product-07",
+    media: { front: "product-05-front", back: "product-05-back" },
   },
   {
     title: "PALAZZO",
     note: "Soft-volume bottom.",
-    mediaBase: "product-08",
+    media: { front: "product-06-front", back: "product-06-back" },
   },
   {
     title: "CO-ORD SET",
     note: "Light embroidered set.",
-    mediaBase: "product-09",
+    media: { front: "product-07-front", back: "product-07-back" },
   },
   {
     title: "DRESS",
     note: "Printed longline dress.",
-    mediaBase: "product-10",
+    media: { front: "product-08-front", back: "product-08-back" },
   },
   {
     title: "PANTS",
     note: "Clean coordinated bottom.",
-    mediaBase: "product-11",
+    media: { front: "product-09-front", back: "product-09-back" },
+  },
+  {
+    title: "DRESS",
+    note: "Longline export styling.",
+    media: { front: "product-10-front", back: "product-10-back" },
+  },
+  {
+    title: "BOTTOMS",
+    note: "Coordinated bottom program.",
+    media: { front: "product-11-front", back: "product-11-back" },
   },
 ];
 
@@ -95,7 +105,7 @@ const normalizeTemplateNumber = () => productTemplateNumber;
 const fallbackBaseForProduct = (product, index) => product.mediaBase || `product-${padNumber(index + 1)}`;
 
 const productFallbackName = (product, index, slotName) =>
-  `${fallbackBaseForProduct(product, index)}-${slotName}`;
+  product.media?.[slotName] || `${fallbackBaseForProduct(product, index)}-${slotName}`;
 
 const escapeHtml = (value = "") =>
   value
@@ -110,6 +120,7 @@ const createProduct = (seed = {}, template = 1) => ({
   title: seed.title || "DRESS",
   note: seed.note || "",
   mediaBase: seed.mediaBase || "",
+  media: seed.media || null,
   template: normalizeTemplateNumber(seed.template ?? template) || 1,
 });
 
@@ -118,6 +129,7 @@ const normalizeProduct = (seed = {}, index = 0) => ({
   title: seed.title || "DRESS",
   note: seed.note || "",
   mediaBase: seed.mediaBase || "",
+  media: seed.media || null,
   template: normalizeTemplateNumber(seed.template) || templateNumberForIndex(index),
 });
 
@@ -433,82 +445,92 @@ const productMarkup = (product, index) => {
   const templateNumber = normalizeTemplateNumber(product.template) || templateNumberForIndex(index);
 
   return `
-  <article class="product-sheet" data-product-id="${product.id}">
-    <div class="product-sheet-toolbar">
-      <div class="product-sheet-meta">
-        <span class="sheet-chip">Product ${padNumber(index + 1)}</span>
-        <span class="sheet-subline">Tokyo 2026 / Product board</span>
-      </div>
+  <section class="page product-sheet reveal" data-product-id="${product.id}">
+    <div class="section-frame product-board-frame">
+      <div class="product-sheet-toolbar">
+        <div class="product-sheet-meta">
+          <span class="sheet-chip">Product ${padNumber(index + 1)}</span>
+          <span class="sheet-subline">Tokyo 2026 / Product board</span>
+        </div>
 
-      <div class="product-sheet-actions">
-        <button type="button" class="toolbar-button is-secondary" data-product-action="move-up">
-          Move Up
-        </button>
-        <button type="button" class="toolbar-button is-secondary" data-product-action="move-down">
-          Move Down
-        </button>
-        <button type="button" class="toolbar-button is-secondary" data-product-action="duplicate">
-          Duplicate
-        </button>
-        <button type="button" class="toolbar-button" data-product-action="remove">
-          Remove
-        </button>
-      </div>
-    </div>
-
-    <div class="product-spread product-template product-template--${templateNumber}">
-      <div class="product-figure-column product-figure-column--front">
-        <div class="figure-stage figure-stage--front">
-          ${productSlotMarkup({
-            productId: product.id,
-            slotName: "front",
-            label: "Primary product image",
-            note: "Use a clean cutout, full product photo, or garment detail.",
-            fallbackName: productFallbackName(product, index, "front"),
-          })}
+        <div class="product-sheet-actions">
+          <button type="button" class="toolbar-button is-secondary" data-product-action="move-up">
+            Move Up
+          </button>
+          <button type="button" class="toolbar-button is-secondary" data-product-action="move-down">
+            Move Down
+          </button>
+          <button type="button" class="toolbar-button is-secondary" data-product-action="duplicate">
+            Duplicate
+          </button>
+          <button type="button" class="toolbar-button" data-product-action="remove">
+            Remove
+          </button>
         </div>
       </div>
 
-      <div class="product-caption-column">
-        <div class="product-caption-card">
-          <div class="caption-kickers">
-            <span class="caption-kicker is-muted">Tokyo 2026</span>
-            <span class="caption-kicker">Garment Export</span>
-          </div>
+      <div class="section-heading product-board-heading">
+        <span class="section-index">${padNumber(index + 1)}</span>
+        <div>
+          <p class="eyebrow">Product Board</p>
+          <h2>Product board.</h2>
+        </div>
+      </div>
 
-          <div class="product-caption">
-            <span class="caption-line"></span>
-            <input
-              class="caption-input"
-              data-field="title"
-              type="text"
-              value="${escapeHtml(product.title)}"
-              aria-label="Product title"
-            />
-            <textarea
-              class="caption-textarea caption-textarea--note"
-              data-field="note"
-              rows="2"
-              aria-label="Product note">${escapeHtml(product.note)}</textarea>
+      <div class="product-spread product-template product-template--${templateNumber}">
+        <div class="product-figure-column product-figure-column--front">
+          <div class="figure-stage figure-stage--front">
+            ${productSlotMarkup({
+              productId: product.id,
+              slotName: "front",
+              label: "Primary product image",
+              note: "Use a clean cutout, full product photo, or garment detail.",
+              fallbackName: productFallbackName(product, index, "front"),
+            })}
           </div>
         </div>
-      </div>
 
-      <div class="product-figure-column product-figure-column--back">
-        <div class="figure-stage figure-stage--back">
-          ${productSlotMarkup({
-            productId: product.id,
-            slotName: "back",
-            label: "Secondary product image",
-            note: "Use an alternate angle, styling shot, or construction detail.",
-            fallbackName: productFallbackName(product, index, "back"),
-          })}
+        <div class="product-caption-column">
+          <div class="product-caption-card">
+            <div class="caption-kickers">
+              <span class="caption-kicker is-muted">Tokyo 2026</span>
+              <span class="caption-kicker">Garment Export</span>
+            </div>
+
+            <div class="product-caption">
+              <span class="caption-line"></span>
+              <input
+                class="caption-input"
+                data-field="title"
+                type="text"
+                value="${escapeHtml(product.title)}"
+                aria-label="Product title"
+              />
+              <textarea
+                class="caption-textarea caption-textarea--note"
+                data-field="note"
+                rows="2"
+                aria-label="Product note">${escapeHtml(product.note)}</textarea>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="product-page-number">${padNumber(index + 1)}</div>
+        <div class="product-figure-column product-figure-column--back">
+          <div class="figure-stage figure-stage--back">
+            ${productSlotMarkup({
+              productId: product.id,
+              slotName: "back",
+              label: "Secondary product image",
+              note: "Use an alternate angle, styling shot, or construction detail.",
+              fallbackName: productFallbackName(product, index, "back"),
+            })}
+          </div>
+        </div>
+
+        <div class="product-page-number">${padNumber(index + 1)}</div>
+      </div>
     </div>
-  </article>
+  </section>
 `;
 };
 

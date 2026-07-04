@@ -8,6 +8,7 @@
       name="description"
       content="Large-format product boards for Esha Apparels' Tokyo 2026 garment export lookbook."
     />
+    <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="products.css" />
   </head>
   <body data-design-page="products">
@@ -19,53 +20,71 @@
 
       <div class="header-actions">
         <nav class="page-nav" aria-label="Page navigation">
-          <a href="index.html">Lookbook</a>
+          <a href="index.html#cover">Cover</a>
+          <a href="index.html#story">Story</a>
+          <a href="index.html#collection">Collection</a>
+          <a href="index.html#factory">Factory</a>
           <a href="products.html" class="is-current">Products</a>
+          <a href="index.html#contact">Contact</a>
         </nav>
       </div>
     </header>
 
-    <main class="products-page">
-      <section class="hero-panel" data-design-target="products-hero-panel" data-design-label="Products hero panel" data-design-kind="frame">
-        <div class="hero-layout">
-          <div class="hero-main" data-design-target="products-hero-main" data-design-label="Products hero copy" data-design-kind="frame">
-            <p class="eyebrow">Product boards / Tokyo 2026</p>
-            <h1>Buyer-ready product range.</h1>
-            <p class="hero-copy">
-              A focused catalogue of tops, shirts, dresses, skirts, palazzo,
-              pants, short dresses, and co-ord sets, presented as calm
-              editorial boards for Japanese buyer review.
-            </p>
-
-            <div class="hero-actions">
-              <button class="hero-button" id="addProductButton" type="button">
-                Add Product
-              </button>
-              <p class="hero-note">
-                Add more boards as needed. Each new page follows the same
-                premium product-sheet format.
-              </p>
-            </div>
+    <main class="lookbook products-lookbook">
+      <section class="page page-products-intro reveal" data-section="products-intro">
+        <div class="section-frame products-intro-frame" data-design-target="products-hero-panel" data-design-label="Products hero panel" data-design-kind="frame">
+          <div class="eyebrow-row">
+            <span class="eyebrow">Product Boards / Tokyo 2026</span>
+            <span class="eyebrow">India / USA / Europe / Japan</span>
           </div>
 
-          <aside class="hero-aside" data-design-target="products-hero-aside" data-design-label="Products hero aside" data-design-kind="frame">
-            <span class="hero-aside-kicker">Manufacturing Range</span>
-            <h2>Commercial womenswear, arranged with quiet precision.</h2>
-            <p>
-              Large image frames keep attention on silhouette, construction,
-              fabric handling, embroidery, trims, and export-ready styling.
-            </p>
+          <div class="products-intro-layout">
+            <div class="products-intro-copy" data-design-target="products-hero-main" data-design-label="Products hero copy" data-design-kind="frame">
+              <p class="vertical-note">Products</p>
+              <h1>Buyer-ready product boards.</h1>
+              <p class="lead">
+                A focused womenswear range presented with the same calm,
+                editorial structure as the main Esha Apparels lookbook.
+              </p>
 
-            <div class="hero-aside-tags">
-              <span>Womenswear</span>
-              <span>Export Ready</span>
-              <span>Japan 2026</span>
+              <div class="pill-row">
+                <span>Tops</span>
+                <span>Shirts</span>
+                <span>Dresses</span>
+                <span>Palazzo</span>
+                <span>Co-ord Sets</span>
+              </div>
+
+              <div class="hero-actions">
+                <button class="hero-button" id="addProductButton" type="button">
+                  Add Product
+                </button>
+              </div>
             </div>
-          </aside>
+
+            <div class="products-source-panel" data-design-target="products-source-panel" data-design-label="Index media source panel" data-design-kind="frame">
+              <figure class="source-media-card source-media-card--large">
+                <img src="media/cover-hero.jpeg" alt="Cover hero garment from the main lookbook" loading="lazy" />
+                <figcaption>Cover hero</figcaption>
+              </figure>
+              <figure class="source-media-card">
+                <img src="media/collection-01.jpeg" alt="Collection garment image 01 from the main lookbook" loading="lazy" />
+                <figcaption>Collection 01</figcaption>
+              </figure>
+              <figure class="source-media-card">
+                <img src="media/collection-02.jpeg" alt="Collection garment image 02 from the main lookbook" loading="lazy" />
+                <figcaption>Collection 02</figcaption>
+              </figure>
+              <figure class="source-media-card">
+                <img src="media/collection-03.jpeg" alt="Collection garment image 03 from the main lookbook" loading="lazy" />
+                <figcaption>Collection 03</figcaption>
+              </figure>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section class="products-section">
+      <div class="products-section">
         <div class="products-list" id="productsList"></div>
 
         <div class="products-footer">
@@ -73,7 +92,7 @@
             Add Another Product
           </button>
         </div>
-      </section>
+      </div>
     </main>
 
     <script src="products.js"></script>
