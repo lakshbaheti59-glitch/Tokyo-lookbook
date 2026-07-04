@@ -1,4 +1,4 @@
-const productsStorageKey = "mumma-lookbook-products-v1";
+const productsStorageKey = "mumma-lookbook-products-v2";
 const productsDbName = "mumma-lookbook";
 const productsDbVersion = 3;
 const productsMediaStore = "product-media";
@@ -7,9 +7,61 @@ const productTemplateNumber = 1;
 const productImageExtensions = ["jpeg", "jpg", "png", "webp", "avif", "svg"];
 const productVideoExtensions = ["mp4", "webm", "mov"];
 const defaultProductSeeds = [
-  { title: "DRESS", note: "" },
-  { title: "SHORT DRESS", note: "" },
-  { title: "TOP", note: "" },
+  {
+    title: "DRESS",
+    note: "Printed everyday silhouettes with export-ready finishing.",
+    mediaBase: "product-01",
+  },
+  {
+    title: "SHORT DRESS",
+    note: "Soft daywear shapes designed for easy buyer review.",
+    mediaBase: "product-02",
+  },
+  {
+    title: "TOP",
+    note: "Lightweight tops with clean trims and commercial styling.",
+    mediaBase: "product-03",
+  },
+  {
+    title: "CO-ORD SET",
+    note: "Matched separates for relaxed resort and retail programs.",
+    mediaBase: "product-04",
+  },
+  {
+    title: "DRESS",
+    note: "Fresh floral dresses with balanced proportion and movement.",
+    mediaBase: "product-05",
+  },
+  {
+    title: "SHORT DRESS",
+    note: "Compact silhouettes with soft volume and precise finishing.",
+    mediaBase: "product-06",
+  },
+  {
+    title: "DRESS",
+    note: "Neutral embroidered dresses with a calm black-and-ivory language.",
+    mediaBase: "product-07",
+  },
+  {
+    title: "TOP / PALAZZO",
+    note: "Separates for modular merchandising across seasonal ranges.",
+    mediaBase: "product-08",
+  },
+  {
+    title: "CO-ORD SET",
+    note: "Summer-ready cotton sets with light embroidery and comfort fit.",
+    mediaBase: "product-09",
+  },
+  {
+    title: "KURTA",
+    note: "Printed longline styles for contemporary ethnic export programs.",
+    mediaBase: "product-10",
+  },
+  {
+    title: "BOTTOMS",
+    note: "Clean bottoms and shorts styled for coordinated assortment planning.",
+    mediaBase: "product-11",
+  },
 ];
 
 const productsList = document.querySelector("#productsList");
@@ -40,7 +92,10 @@ const templateNumberForIndex = () => productTemplateNumber;
 
 const normalizeTemplateNumber = () => productTemplateNumber;
 
-const productFallbackName = (index, slotName) => `product-${padNumber(index + 1)}-${slotName}`;
+const fallbackBaseForProduct = (product, index) => product.mediaBase || `product-${padNumber(index + 1)}`;
+
+const productFallbackName = (product, index, slotName) =>
+  `${fallbackBaseForProduct(product, index)}-${slotName}`;
 
 const escapeHtml = (value = "") =>
   value
@@ -54,6 +109,7 @@ const createProduct = (seed = {}, template = 1) => ({
   id: createId(),
   title: seed.title || "DRESS",
   note: seed.note || "",
+  mediaBase: seed.mediaBase || "",
   template: normalizeTemplateNumber(seed.template ?? template) || 1,
 });
 
@@ -61,6 +117,7 @@ const normalizeProduct = (seed = {}, index = 0) => ({
   id: seed.id || createId(),
   title: seed.title || "DRESS",
   note: seed.note || "",
+  mediaBase: seed.mediaBase || "",
   template: normalizeTemplateNumber(seed.template) || templateNumberForIndex(index),
 });
 
@@ -221,15 +278,20 @@ const mediaCandidates = (baseName, preferredType = "image") => {
   const secondaryType = preferredType === "video" ? "image" : "video";
 
   return [
-    ...primary.map((extension) => ({
-      src: `media/${baseName}.${extension}`,
+    ...primary.flatMap((extension) => ({
+      src: [`media/${baseName}.${extension}`, `${baseName}.${extension}`],
       type: primaryType,
     })),
-    ...secondary.map((extension) => ({
-      src: `media/${baseName}.${extension}`,
+    ...secondary.flatMap((extension) => ({
+      src: [`media/${baseName}.${extension}`, `${baseName}.${extension}`],
       type: secondaryType,
     })),
-  ];
+  ].flatMap((candidate) =>
+    candidate.src.map((src) => ({
+      src,
+      type: candidate.type,
+    }))
+  );
 };
 
 const tryLoadImage = (src) =>
@@ -402,7 +464,7 @@ const productMarkup = (product, index) => {
             slotName: "front",
             label: "Primary product image",
             note: "Use a clean cutout, full product photo, or garment detail.",
-            fallbackName: productFallbackName(index, "front"),
+            fallbackName: productFallbackName(product, index, "front"),
           })}
         </div>
       </div>
@@ -439,7 +501,7 @@ const productMarkup = (product, index) => {
             slotName: "back",
             label: "Secondary product image",
             note: "Use an alternate angle, styling shot, or construction detail.",
-            fallbackName: productFallbackName(index, "back"),
+            fallbackName: productFallbackName(product, index, "back"),
           })}
         </div>
       </div>
